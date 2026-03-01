@@ -13,7 +13,7 @@ import { getLayerById } from '../../data/osiLayers'
  * Router component that displays the appropriate 3D model
  * based on the selected layer and concept.
  */
-export default function ConceptVisualizations({ layerId, conceptId, triggerScenario, triggerClosing, onStateUpdate }) {
+export default function ConceptVisualizations({ layerId, conceptId, triggerScenario, triggerClosing, onStateUpdate, segmentPhase, outOfOrder }) {
   const visualizations = {
     1: ApplicationLayerViz,      // Application Layer
     2: PresentationLayerViz,     // Presentation Layer
@@ -46,5 +46,5 @@ export default function ConceptVisualizations({ layerId, conceptId, triggerScena
   // Default fallback
   VisualizationComponent = VisualizationComponent || ApplicationLayerViz
 
-  return <VisualizationComponent conceptId={conceptId} triggerScenario={triggerScenario} triggerClosing={triggerClosing} onStateUpdate={onStateUpdate} />
+  return <VisualizationComponent conceptId={conceptId} triggerScenario={triggerScenario} triggerClosing={triggerClosing} onStateUpdate={onStateUpdate} segmentPhase={segmentPhase} outOfOrder={outOfOrder} />
 }

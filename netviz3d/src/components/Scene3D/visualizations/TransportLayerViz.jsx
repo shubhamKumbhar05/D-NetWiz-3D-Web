@@ -2,60 +2,12 @@ import React from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useRef } from 'react'
 import TCPConnectionViz from './TCPConnectionViz'
+import SegmentationStage from './SegmentationStage'
 
 /**
  * Transport Layer Visualization - Per-Concept Models
  * Segmentation | TCP Connection | ACK | Retransmission | Flow Control | TCP vs UDP
  */
-
-// Segmentation Visualization
-function SegmentationViz() {
-  const groupRef = useRef()
-  const timeRef = useRef(0)
-  useFrame(() => {
-    timeRef.current += 0.016
-    if (groupRef.current) groupRef.current.rotation.y += 0.005
-  })
-  return (
-    <group ref={groupRef}>
-      {/* Large data cube */}
-      <mesh position={[-3, 0, 0]}>
-        <boxGeometry args={[2, 2, 2]} />
-        <meshStandardMaterial color="#a855f7" emissive="#7e22ce" emissiveIntensity={0.6} />
-      </mesh>
-      {/* Split segments - positions animated in useFrame */}
-      <SegmentParticles timeRef={timeRef} />
-      {/* Arrow elements */}
-      <mesh position={[-1, -1, 0]}>
-        <sphereGeometry args={[0.3, 16, 16]} />
-        <meshStandardMaterial color="#fbbf24" emissive="#f59e0b" emissiveIntensity={0.8} />
-      </mesh>
-    </group>
-  )
-}
-
-function SegmentParticles({ timeRef }) {
-  const particlesRef = useRef([])
-
-  useFrame(() => {
-    particlesRef.current.forEach((ref, i) => {
-      if (ref) {
-        ref.position.y = -2.5 + Math.sin(timeRef.current * 0.002 + i) * 0.5
-      }
-    })
-  })
-
-  return (
-    <>
-      {[0, 1, 2, 3].map((i) => (
-        <mesh key={`seg-${i}`} ref={(el) => (particlesRef.current[i] = el)} position={[0 + i * 1.2, -2.5, 0]}>
-          <boxGeometry args={[0.8, 0.8, 0.8]} />
-          <meshStandardMaterial color="#d8b4fe" emissive="#a855f7" emissiveIntensity={0.8} />
-        </mesh>
-      ))}
-    </>
-  )
-}
 
 // TCP Connection Visualization is now imported from TCPConnectionViz.jsx
 // See TCPConnectionViz component for Phase 1-5 implementation details
@@ -236,10 +188,10 @@ function TCPvsUDPViz() {
   )
 }
 
-export default function TransportLayerViz({ conceptId = 'trans-segmentation', triggerScenario, triggerClosing, onStateUpdate }) {
+export default function TransportLayerViz({ conceptId = 'trans-segmentation', triggerScenario, triggerClosing, onStateUpdate, segmentPhase, outOfOrder }) {
   switch (conceptId) {
     case 'trans-segmentation':
-      return <SegmentationViz />
+      return <SegmentationStage externalPhase={segmentPhase} outOfOrder={outOfOrder} />
     case 'trans-tcp-conn':
       return <TCPConnectionViz triggerScenario={triggerScenario} triggerClosing={triggerClosing} onStateUpdate={onStateUpdate} />
     case 'trans-ack':
@@ -251,6 +203,6 @@ export default function TransportLayerViz({ conceptId = 'trans-segmentation', tr
     case 'trans-tcp-vs-udp':
       return <TCPvsUDPViz />
     default:
-      return <SegmentationViz />
+      return <SegmentationStage />
   }
 }
