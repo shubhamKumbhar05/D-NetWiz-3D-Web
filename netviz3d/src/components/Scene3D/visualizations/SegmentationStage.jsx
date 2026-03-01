@@ -1170,28 +1170,30 @@ function BufferSlot({ slotNumber, isFilled, isBlinking, isWaiting, fillColor, is
         </mesh>
       )}
 
-      {/* Fill box - outline only when filled */}
+      {/* Fill box - solid filled block when segment arrives */}
       {isFilled && (
         <>
-          {/* Glowing outline box */}
+          {/* Solid filled colour block */}
           <mesh ref={meshRef} position={[0, 0.01, 0]} scale={fillScale}>
             <boxGeometry args={[slotSize - 0.12, slotSize - 0.12, slotSize - 0.12]} />
-            <meshBasicMaterial
+            <meshPhongMaterial
               color={fillColor}
-              wireframe={false}
+              emissive="#0ea5e9"
+              emissiveIntensity={0.35}
+              shininess={130}
               transparent
-              opacity={0.4}
+              opacity={0.85}
               depthWrite={true}
             />
           </mesh>
 
-          {/* Inner glow effect - subtle */}
+          {/* Inner glow effect */}
           <mesh ref={glowRef} position={[0, 0.01, 0]} scale={fillScale}>
             <boxGeometry args={[slotSize - 0.05, slotSize - 0.05, slotSize - 0.05]} />
             <meshBasicMaterial
               color={fillColor}
               transparent
-              opacity={0.15}
+              opacity={0.25}
               depthWrite={false}
             />
           </mesh>
@@ -1202,7 +1204,7 @@ function BufferSlot({ slotNumber, isFilled, isBlinking, isWaiting, fillColor, is
             <meshBasicMaterial
               color={fillColor}
               transparent
-              opacity={0.08}
+              opacity={0.12}
               depthWrite={false}
             />
           </mesh>
@@ -1326,6 +1328,17 @@ function BufferGrid({ slotStates, isScanning, showMerged, mergedScale, outOfOrde
 
   return (
     <group ref={groupRef} position={SERVER_POSITION}>
+      {/* Server chassis - dark transparent background panel */}
+      <mesh position={[0, 0, 0]}>
+        <boxGeometry args={[2.15, 2.15, 2.15]} />
+        <meshBasicMaterial
+          color="#060d1a"
+          transparent
+          opacity={0.55}
+          depthWrite={false}
+        />
+      </mesh>
+
       {/* Server box frame - bright cyan wireframe outline */}
       <mesh position={[0, 0, 0]}>
         <boxGeometry args={[2.2, 2.2, 2.2]} />
@@ -1333,29 +1346,27 @@ function BufferGrid({ slotStates, isScanning, showMerged, mergedScale, outOfOrde
           color="#38bdf8"
           wireframe={true}
           transparent
-          opacity={0.85}
+          opacity={0.9}
         />
       </mesh>
 
-      {/* Enhanced border frame - outer edges - bright cyan */}
+      {/* Enhanced border frame - outer edges - bright cyan (subtle, outline-only) */}
       <mesh position={[0, 0, 1.12]}>
         <boxGeometry args={[2.25, 2.25, 0.08]} />
-        <meshBasicMaterial color="#38bdf8" transparent opacity={0.7} />
+        <meshBasicMaterial color="#38bdf8" transparent opacity={0.2} />
       </mesh>
       <mesh position={[0, 0, -1.12]}>
         <boxGeometry args={[2.25, 2.25, 0.08]} />
-        <meshBasicMaterial color="#38bdf8" transparent opacity={0.7} />
+        <meshBasicMaterial color="#38bdf8" transparent opacity={0.2} />
       </mesh>
       <mesh position={[1.12, 0, 0]}>
         <boxGeometry args={[0.08, 2.25, 2.25]} />
-        <meshBasicMaterial color="#38bdf8" transparent opacity={0.7} />
+        <meshBasicMaterial color="#38bdf8" transparent opacity={0.2} />
       </mesh>
       <mesh position={[-1.12, 0, 0]}>
         <boxGeometry args={[0.08, 2.25, 2.25]} />
-        <meshBasicMaterial color="#38bdf8" transparent opacity={0.7} />
+        <meshBasicMaterial color="#38bdf8" transparent opacity={0.2} />
       </mesh>
-
-      {/* Inner panel - hidden */}
 
       {/* Top status strip */}
       <mesh position={[0, 0.96, 0.92]}>
@@ -1393,16 +1404,36 @@ function BufferGrid({ slotStates, isScanning, showMerged, mergedScale, outOfOrde
         <meshBasicMaterial color="#38bdf8" transparent opacity={0.9} />
       </mesh>
 
-      {/* Buffer container label */}
-      <Html distanceFactor={1.2} position={[0, 1.36, 0]}>
+      {/* Server identity badge - always visible; Y=-1.52 places it just below the 2.2-unit-tall server box */}
+      <Html distanceFactor={1.2} position={[0, -1.52, 0]}>
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(8,47,73,0.95), rgba(12,74,110,0.9))',
+          border: '2px solid rgba(56,189,248,0.7)',
+          borderRadius: '8px',
+          padding: '4px 14px',
+          color: '#7dd3fc',
+          fontSize: '10px',
+          fontWeight: '900',
+          fontFamily: 'monospace',
+          letterSpacing: '2px',
+          textShadow: '0 0 8px rgba(56,189,248,0.9)',
+          boxShadow: '0 0 14px rgba(56,189,248,0.5), 0 4px 10px rgba(0,0,0,0.8)',
+          whiteSpace: 'nowrap',
+        }}>
+          🖥️ SERVER · OUT-OF-ORDER BUFFER
+        </div>
+      </Html>
+
+      {/* Buffer container status label */}
+      <Html distanceFactor={1.2} position={[0, 1.52, 0]}>
         <div className="text-xs font-bold text-center px-3 py-1.5 rounded-lg bg-gradient-to-r from-indigo-900/95 to-indigo-800/95 border-2 border-cyan-400/80 text-cyan-300 whitespace-nowrap shadow-lg">
           {isReassembling 
             ? '🔄 REASSEMBLING: Extracting [1→2→3→4]'
             : isScanning
             ? '✓ All 4 Packets Received! Reordering Buffer...'
             : receivedSegmentsCount === 0
-            ? '📥 SERVER BUFFER: Waiting for TCP Packets...'
-            : `📥 SERVER BUFFER: Received ${receivedSegmentsCount}/4 | Arrival Order: 1→3→2→4 | Expecting SEQ ${expectedSequence}`}
+            ? '📥 Waiting for TCP Packets...'
+            : `📥 Received ${receivedSegmentsCount}/4 · Arrival: 1→3→2→4 · Next SEQ ${expectedSequence}`}
         </div>
       </Html>
 
