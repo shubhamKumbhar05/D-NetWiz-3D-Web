@@ -87,6 +87,13 @@ export const OSI_LAYERS = [
         visualGoal: 'Show sliding window mechanism',
       },
       {
+        id: 'trans-congestion-ctrl',
+        name: 'Congestion Control',
+        meaning: 'Managing transmission rate to prevent network congestion and packet loss',
+        example: 'TCP Reno adjusts congestion window based on timeouts and triple ACK duplicates',
+        visualGoal: 'Show congestion window dynamics with AIMD algorithm and packet loss scenarios',
+      },
+      {
         id: 'trans-tcp-vs-udp',
         name: 'TCP vs UDP',
         meaning: 'Comparing reliable (TCP) vs unreliable (UDP) protocols',

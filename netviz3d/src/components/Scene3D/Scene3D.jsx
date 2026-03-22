@@ -50,6 +50,7 @@ export default function Scene3D({ selectedConceptId, selectedLayerId, onBack }) 
   const isTcpVsUdpConcept = selectedConceptId === 'trans-tcp-vs-udp'
   const isFragmentationConcept = selectedConceptId === 'net-fragmentation'
   const orbitControlsRef = useRef(null)
+  const congestionCtrlPanelRef = useRef(null)
 
   const handleTriggerScenario = (scenario) => {
     // First clear the trigger
@@ -66,6 +67,47 @@ export default function Scene3D({ selectedConceptId, selectedLayerId, onBack }) 
     setTimeout(() => {
       setTriggerClosing(true)
     }, 50)
+  }
+
+  const handleMultiplexingStart = () => {
+    if (!multiplexingIsRunning) {
+      setMultiplexingIsRunning(true)
+      setMultiplexingUiMessage('▶️ The Process of Multiplexing & Demultiplexing Started...')
+    }
+  }
+
+  const handleMultiplexingReset = () => {
+    setMultiplexingIsRunning(false)
+    setMultiplexingUiMessage('')
+    setMultiplexingResetTrigger(prev => prev + 1)
+    setTimeout(() => {
+      setMultiplexingUiMessage('✅ Visualization reset to default state')
+      setTimeout(() => setMultiplexingUiMessage(''), 2000)
+    }, 100)
+  }
+
+  const handleCongestionCtrlStart = () => {
+    if (!congestionCtrlIsRunning) {
+      setCongestionCtrlIsRunning(true)
+      setCongestionCtrlUiMessage('▶️ Congestion Control Cycle Starting...')
+    }
+  }
+
+  const handleCongestionCtrlReset = () => {
+    setCongestionCtrlIsRunning(false)
+    setCongestionCtrlUiMessage('')
+    setCongestionCtrlResetTrigger(prev => prev + 1)
+    setTimeout(() => {
+      setCongestionCtrlUiMessage('✅ Visualization reset to default state')
+      setTimeout(() => setCongestionCtrlUiMessage(''), 2000)
+    }, 100)
+  }
+
+  const handleNetworkCongestion = () => {
+    if (congestionCtrlIsRunning) {
+      setCongestionCtrlNetworkCongestionTrigger(prev => prev + 1)
+      setCongestionCtrlUiMessage('🚨 Network Congestion Triggered - Packet Loss Condition Active!')
+    }
   }
 
   const handleSegmentationPhase = (phase) => {
@@ -242,6 +284,23 @@ export default function Scene3D({ selectedConceptId, selectedLayerId, onBack }) 
       return () => clearTimeout(timer)
     }
   }, [triggerClosing])
+
+  useEffect(() => {
+    if (!isCongestionControlConcept) return
+
+    const updatePanelHeight = () => {
+      if (!congestionCtrlPanelRef.current) return
+      const measuredHeight = Math.ceil(congestionCtrlPanelRef.current.getBoundingClientRect().height)
+      setCongestionCtrlPanelHeight(measuredHeight)
+    }
+
+    updatePanelHeight()
+    window.addEventListener('resize', updatePanelHeight)
+
+    return () => {
+      window.removeEventListener('resize', updatePanelHeight)
+    }
+  }, [isCongestionControlConcept, congestionCtrlUiMessage])
 
   return (
     <AnimatePresence>
