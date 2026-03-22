@@ -78,6 +78,13 @@ export const conceptMapping = {
     layer: 'Transport',
     icon: '⚡'
   },
+  'trans-congestion-ctrl': {
+    name: 'Congestion Control',
+    fullName: 'TCP Congestion Control',
+    color: '#e0e7ff',
+    layer: 'Transport',
+    icon: '🚦'
+  },
 
   // Network Layer (7 concepts)
   'net-ip-addr': {

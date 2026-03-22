@@ -7,6 +7,8 @@ import SegmentationStage from './SegmentationStage'
 import ACKViz from './ACKViz'
 import FlowControlViz from './FlowControlViz'
 import TcpUdpViz from './TcpUdpViz'
+import MultiplexingDemultiplexingViz from './MultiplexingDemultiplexingViz'
+import CongestionControlViz from './CongestionControlViz'
 
 /**
  * Transport Layer Visualization - Per-Concept Models
@@ -65,7 +67,7 @@ function RetransmissionViz() {
 
 // TCP vs UDP Visualization is now imported from TcpUdpViz.jsx
 
-export default function TransportLayerViz({ conceptId = 'trans-segmentation', triggerScenario, triggerClosing, onStateUpdate, segmentPhase, inOrderMode, ackIsRunning, onACKMessage, ackResetTrigger, packetLossEnabled, ackLossEnabled, flowControlIsRunning, onFlowControlMessage, flowControlResetTrigger, flowControlDrainSpeed, flowControlSimulateFullBuffer, flowControlClearBuffer, tcpUdpIsRunning, tcpUdpIsTCP, onTcpUdpMessage, tcpUdpResetTrigger, tcpUdpSimulateLoss }) {
+export default function TransportLayerViz({ conceptId = 'trans-segmentation', triggerScenario, triggerClosing, onStateUpdate, segmentPhase, inOrderMode, ackIsRunning, onACKMessage, ackResetTrigger, packetLossEnabled, ackLossEnabled, flowControlIsRunning, onFlowControlMessage, flowControlResetTrigger, flowControlDrainSpeed, flowControlSimulateFullBuffer, flowControlClearBuffer, tcpUdpIsRunning, tcpUdpIsTCP, onTcpUdpMessage, tcpUdpResetTrigger, tcpUdpSimulateLoss, multiplexingIsRunning, onMultiplexingMessage, multiplexingResetTrigger, congestionCtrlIsRunning, onCongestionCtrlMessage, congestionCtrlResetTrigger, onCongestionCtrlStateUpdate, congestionCtrlNetworkCongestionTrigger }) {
   switch (conceptId) {
     case 'trans-segmentation':
       return <SegmentationStage externalPhase={segmentPhase} inOrderMode={inOrderMode} />
@@ -74,11 +76,13 @@ export default function TransportLayerViz({ conceptId = 'trans-segmentation', tr
     case 'trans-ack':
       return <ACKViz isRunning={ackIsRunning} onMessage={onACKMessage} resetTrigger={ackResetTrigger} packetLossEnabled={packetLossEnabled} ackLossEnabled={ackLossEnabled} />
     case 'trans-retrans':
-      return <RetransmissionViz />
+      return <MultiplexingDemultiplexingViz isRunning={multiplexingIsRunning} onStatusUpdate={onMultiplexingMessage} resetTrigger={multiplexingResetTrigger} />
     case 'trans-flow-ctrl':
       return <FlowControlViz isRunning={flowControlIsRunning} onMessage={onFlowControlMessage} resetTrigger={flowControlResetTrigger} drainSpeed={flowControlDrainSpeed} simulateFullBuffer={flowControlSimulateFullBuffer} clearBuffer={flowControlClearBuffer} />
     case 'trans-tcp-vs-udp':
       return <TcpUdpViz isRunning={tcpUdpIsRunning} isTCP={tcpUdpIsTCP} onMessage={onTcpUdpMessage} resetTrigger={tcpUdpResetTrigger} simulateLoss={tcpUdpSimulateLoss} />
+    case 'trans-congestion-ctrl':
+      return <CongestionControlViz isRunning={congestionCtrlIsRunning} onMessage={onCongestionCtrlMessage} resetTrigger={congestionCtrlResetTrigger} onStateUpdate={onCongestionCtrlStateUpdate} congestionCtrlNetworkCongestionTrigger={congestionCtrlNetworkCongestionTrigger} />
     default:
       return <SegmentationStage inOrderMode={inOrderMode} />
   }
