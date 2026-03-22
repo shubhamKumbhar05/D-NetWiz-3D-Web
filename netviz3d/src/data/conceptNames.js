@@ -79,55 +79,83 @@ export const conceptMapping = {
     icon: '⚡'
   },
 
-  // Network Layer (7 concepts)
-  'net-ip-addr': {
-    name: 'IP Addressing',
-    fullName: 'Internet Protocol Addressing',
+  // Network Layer (11 concepts)
+  'net-ipv4-header': {
+    name: 'IPv4 Header',
+    fullName: 'IPv4 Header Structure',
+    color: '#0ea5e9',
+    layer: 'Network',
+    icon: '📋'
+  },
+  'net-fragmentation': {
+    name: 'Fragmentation',
+    fullName: 'IP Datagram Fragmentation',
     color: '#06b6d4',
     layer: 'Network',
-    icon: '🏷️'
-  },
-  'net-subnetting': {
-    name: 'Subnetting',
-    fullName: 'Network Subnetting',
-    color: '#22d3ee',
-    layer: 'Network',
-    icon: '🔗'
-  },
-  'net-routing-table': {
-    name: 'Routing Table',
-    fullName: 'Router Routing Table',
-    color: '#06b6d4',
-    layer: 'Network',
-    icon: '📍'
-  },
-  'net-forwarding': {
-    name: 'Packet Forwarding',
-    fullName: 'Router Packet Forwarding',
-    color: '#22d3ee',
-    layer: 'Network',
-    icon: '➡️'
-  },
-  'net-path-selection': {
-    name: 'Path Selection',
-    fullName: 'Shortest Path Algorithm',
-    color: '#06b6d4',
-    layer: 'Network',
-    icon: '🛤️'
+    icon: '✂️'
   },
   'net-ttl': {
     name: 'TTL',
-    fullName: 'Time To Live Hop Limit',
+    fullName: 'Time To Live',
     color: '#22d3ee',
     layer: 'Network',
     icon: '⏰'
   },
-  'net-pkt-drop': {
-    name: 'Packet Drop',
-    fullName: 'Congestion Packet Drop',
+  'net-network-host-id': {
+    name: 'Network & Host ID',
+    fullName: 'Network ID, Host ID, and IP Address',
     color: '#06b6d4',
     layer: 'Network',
-    icon: '🗑️'
+    icon: '🏷️'
+  },
+  'net-classful-addressing': {
+    name: 'Classful Addressing',
+    fullName: 'Classful Addressing (Class A, B, C, D, E)',
+    color: '#22d3ee',
+    layer: 'Network',
+    icon: '📊'
+  },
+  'net-subnetting': {
+    name: 'Subnetting',
+    fullName: 'Network Subnetting',
+    color: '#0891b2',
+    layer: 'Network',
+    icon: '🔗'
+  },
+  'net-supernetting': {
+    name: 'Supernetting',
+    fullName: 'Route Aggregation & Supernetting',
+    color: '#22d3ee',
+    layer: 'Network',
+    icon: '📦'
+  },
+  'net-cidr': {
+    name: 'CIDR',
+    fullName: 'Classless Inter-Domain Routing',
+    color: '#06b6d4',
+    layer: 'Network',
+    icon: '🌐'
+  },
+  'net-vlsm': {
+    name: 'VLSM',
+    fullName: 'Variable Length Subnet Mask',
+    color: '#22d3ee',
+    layer: 'Network',
+    icon: '📐'
+  },
+  'net-forwarding-table': {
+    name: 'Forwarding Table',
+    fullName: 'Router Forwarding Table',
+    color: '#0891b2',
+    layer: 'Network',
+    icon: '📍'
+  },
+  'net-routing-algorithm': {
+    name: 'Routing Algorithm',
+    fullName: 'Routing Algorithm (LSR)',
+    color: '#22d3ee',
+    layer: 'Network',
+    icon: '🛤️'
   },
 
   // Data Link Layer (4 concepts)
